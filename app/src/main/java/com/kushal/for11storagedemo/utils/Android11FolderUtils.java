@@ -40,12 +40,50 @@ public class Android11FolderUtils {
 
                 Toast.makeText(context, "Image Saved", Toast.LENGTH_SHORT).show();
 
+            } else {
+
+                saveBitmap(context, bitmap, name);
+
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    public static String saveBitmap(Context context, Bitmap bitmap, String str) {
+
+        try {
+
+            String file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+            File file2 = new File(file, context.getString(R.string.app_name));
+            if (!file2.exists()) {
+                file2.mkdirs();
+            }
+
+            File file3 = new File(file, context.getString(R.string.app_name) + "/" + str);
+            FileOutputStream fileOutputStream = new FileOutputStream(file3);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+            Toast(context, "Saved Successfully");
+            String absolutePath = file3.getAbsolutePath();
+            MediaScannerConnection.scanFile(context, new String[]{file3.getPath()}, new String[]{"image/jpeg"}, null);
+            return absolutePath;
+
+        } catch (Exception unused) {
+            Toast(context, "Failed to Save");
+            return null;
+        }
+    }
+
+    public static void Toast(Context context, String str) {
+        Toast(context, str, 0);
+    }
+
+    public static void Toast(Context context, String str, int i) {
+        Toast.makeText(context, str, i).show();
     }
 
 }
